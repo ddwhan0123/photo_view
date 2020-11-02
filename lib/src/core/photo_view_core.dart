@@ -1,5 +1,6 @@
-import 'package:flutter/widgets.dart';
+import 'dart:ui' as ui;
 
+import 'package:flutter/widgets.dart';
 import 'package:photo_view/photo_view.dart'
     show
         PhotoViewScaleState,
@@ -10,9 +11,9 @@ import 'package:photo_view/photo_view.dart'
 import 'package:photo_view/src/controller/photo_view_controller.dart';
 import 'package:photo_view/src/controller/photo_view_controller_delegate.dart';
 import 'package:photo_view/src/controller/photo_view_scalestate_controller.dart';
-import 'package:photo_view/src/utils/photo_view_utils.dart';
 import 'package:photo_view/src/core/photo_view_gesture_detector.dart';
 import 'package:photo_view/src/core/photo_view_hit_corners.dart';
+import 'package:photo_view/src/utils/photo_view_utils.dart';
 
 const _defaultDecoration = const BoxDecoration(
   color: const Color.fromRGBO(0, 0, 0, 1.0),
@@ -258,9 +259,23 @@ class PhotoViewCoreState extends State<PhotoViewCore>
     cachedScaleBoundaries = widget.scaleBoundaries;
   }
 
-  void animateOnScaleStateUpdate(double prevScale, double nextScale) {
+  void animateOnScaleStateUpdate(
+    double prevScale,
+    double nextScale, {
+    Offset pos,
+    BuildContext context,
+  }) {
+    final screenWidth =
+        ui.window.physicalSize.width / ui.window.devicePixelRatio;
+    final screenHeight =
+        ui.window.physicalSize.height / ui.window.devicePixelRatio;
     animateScale(prevScale, nextScale);
-    animatePosition(controller.position, Offset.zero);
+    animatePosition(
+        controller.position,
+        nextScale > prevScale
+            ? Offset((screenWidth / 2 - pos.dx) / nextScale,
+                (screenHeight / 2 - pos.dy) / nextScale)
+            : Offset.zero);
     animateRotation(controller.rotation, 0.0);
   }
 
@@ -336,13 +351,16 @@ class PhotoViewCoreState extends State<PhotoViewCore>
 
             return PhotoViewGestureDetector(
               child: child,
-              onDoubleTap: nextScaleState,
               onScaleStart: onScaleStart,
               onScaleUpdate: onScaleUpdate,
               onScaleEnd: onScaleEnd,
               hitDetector: this,
               onTapUp: widget.onTapUp == null ? null : onTapUp,
               onTapDown: widget.onTapDown == null ? null : onTapDown,
+              onDoubleTapFinish: (value) {
+                print(value);
+                nextScaleState(pos: value);
+              },
             );
           } else {
             return Container();

@@ -41,6 +41,19 @@ class CommonExampleRouteWrapper extends StatelessWidget {
           basePosition: basePosition,
           filterQuality: filterQuality,
           disableGestures: disableGestures,
+          scaleStateCycle: (actual) {
+            switch (actual) {
+              case PhotoViewScaleState.initial:
+                return PhotoViewScaleState.covering;
+              case PhotoViewScaleState.covering:
+                return PhotoViewScaleState.initial;
+              case PhotoViewScaleState.zoomedIn:
+              case PhotoViewScaleState.zoomedOut:
+                return PhotoViewScaleState.initial;
+              default:
+                return PhotoViewScaleState.initial;
+            }
+          },
         ),
       ),
     );
