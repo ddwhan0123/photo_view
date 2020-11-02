@@ -20,6 +20,7 @@ class CommonUseCasesExamples extends StatelessWidget {
                 MaterialPageRoute(
                   builder: (context) => const CommonExampleRouteWrapper(
                     imageProvider: const AssetImage("assets/large-image.jpg"),
+                    minScale: PhotoViewComputedScale.contained,
                   ),
                 ),
               );

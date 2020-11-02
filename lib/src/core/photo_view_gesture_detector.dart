@@ -2,6 +2,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/widgets.dart';
 
 import 'photo_view_hit_corners.dart';
+import 'photo_view_multi_tap.dart';
 
 class PhotoViewGestureDetector extends StatelessWidget {
   const PhotoViewGestureDetector({
@@ -15,7 +16,10 @@ class PhotoViewGestureDetector extends StatelessWidget {
     this.onTapUp,
     this.onTapDown,
     this.behavior,
+    this.onDoubleTapFinish,
   }) : super(key: key);
+
+  final ValueChanged<Offset> onDoubleTapFinish;
 
   final GestureDoubleTapCallback onDoubleTap;
   final HitCornersDetector hitDetector;
@@ -52,11 +56,14 @@ class PhotoViewGestureDetector extends StatelessWidget {
       );
     }
 
-    gestures[DoubleTapGestureRecognizer] =
-        GestureRecognizerFactoryWithHandlers<DoubleTapGestureRecognizer>(
-      () => DoubleTapGestureRecognizer(debugOwner: this),
-      (DoubleTapGestureRecognizer instance) {
-        instance..onDoubleTap = onDoubleTap;
+    gestures[PhotoViewDoubleTapGestureRecognizer] =
+        GestureRecognizerFactoryWithHandlers<
+            PhotoViewDoubleTapGestureRecognizer>(
+      () => PhotoViewDoubleTapGestureRecognizer(debugOwner: this),
+      (PhotoViewDoubleTapGestureRecognizer instance) {
+        instance
+          // ..onDoubleTap = onDoubleTap
+          ..onDoubleTapFinish = onDoubleTapFinish;
       },
     );
 

@@ -39,6 +39,9 @@ class PhotoViewScaleStateController {
   /// The state value before the last change or the initial state if the state has not been changed.
   PhotoViewScaleState prevScaleState;
 
+  /// The gesture position when double tap occurs.
+  Offset pos;
+
   /// The actual state value
   PhotoViewScaleState get scaleState => _scaleStateNotifier.value;
 

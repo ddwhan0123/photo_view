@@ -28,7 +28,12 @@ mixin PhotoViewControllerDelegate on State<PhotoViewCore> {
   ScaleStateCycle get scaleStateCycle => widget.scaleStateCycle;
 
   Alignment get basePosition => widget.basePosition;
-  Function(double prevScale, double nextScale) _animateScale;
+  Function(
+    double prevScale,
+    double nextScale, {
+    Offset pos,
+    BuildContext context,
+  }) _animateScale;
 
   /// Mark if scale need recalculation, useful for scale boundaries changes.
   bool markNeedsScaleRecalc = true;
@@ -57,11 +62,20 @@ mixin PhotoViewControllerDelegate on State<PhotoViewCore> {
       scaleBoundaries,
     );
 
-    _animateScale(prevScale, nextScale);
+    _animateScale(
+      prevScale,
+      nextScale,
+      pos: scaleStateController.pos,
+    );
   }
 
   void addAnimateOnScaleStateUpdate(
-    void animateScale(double prevScale, double nextScale),
+    void animateScale(
+      double prevScale,
+      double nextScale, {
+      Offset pos,
+      BuildContext context,
+    }),
   ) {
     _animateScale = animateScale;
   }
@@ -122,7 +136,9 @@ mixin PhotoViewControllerDelegate on State<PhotoViewCore> {
     scaleStateController.setInvisibly(newScaleState);
   }
 
-  void nextScaleState() {
+  void nextScaleState({
+    Offset pos,
+  }) {
     final PhotoViewScaleState scaleState = scaleStateController.scaleState;
     if (scaleState == PhotoViewScaleState.zoomedIn ||
         scaleState == PhotoViewScaleState.zoomedOut) {
@@ -149,6 +165,8 @@ mixin PhotoViewControllerDelegate on State<PhotoViewCore> {
     if (originalScale == nextScale) {
       return;
     }
+    scaleStateController.pos = pos;
+
     scaleStateController.scaleState = nextScaleState;
   }
 
