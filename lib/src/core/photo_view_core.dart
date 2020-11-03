@@ -358,7 +358,6 @@ class PhotoViewCoreState extends State<PhotoViewCore>
               onTapUp: widget.onTapUp == null ? null : onTapUp,
               onTapDown: widget.onTapDown == null ? null : onTapDown,
               onDoubleTapFinish: (value) {
-                print(value);
                 nextScaleState(pos: value);
               },
             );
